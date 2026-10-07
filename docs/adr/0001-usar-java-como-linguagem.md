@@ -2,12 +2,12 @@
 
 **Status:** aceito
 
-**Contexto:** O projeto é um sistema cliente-servidor de cofre de senhas, com prazo de um semestre e equipe de quatro integrantes. A linguagem precisa oferecer suporte nativo a criptografia (hash e cifragem de credenciais), boa integração com sockets para a comunicação cliente-servidor e empacotamento via Docker. A linguagem definida para o semestre é Java.
+**Contexto:** O projeto é um sistema cliente-servidor de cofre de senhas desenvolvido em um semestre letivo A linguagem precisa oferecer suporte nativo a criptografia (hash e cifragem de credenciais), boa integração com sockets para a comunicação cliente-servidor e empacotamento via Docker. A linguagem definida para o semestre é Java.
 
 **Decisão:** Utilizar Java (JDK 17 ou superior) como linguagem única para o cliente e o servidor, concentrando toda a lógica de criptografia, autenticação e comunicação.
 
 **Alternativas consideradas:**
-- Python: descartada pela menor familiaridade do grupo e pela ausência de tipagem estática forte, que ajudaria na verificação de contratos entre módulos.
+- Python: descartada pela ausência de tipagem estática forte, que ajudaria na verificação de contratos entre módulos.
 - Kotlin: descartada pela curva de aprendizado adicional desnecessária ao escopo.
 - TypeScript/Node.js: descartada pela menor maturidade em criptografia de baixo nível e pela dispersão entre front-end e back-end.
 
