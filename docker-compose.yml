@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: vault-db
+    restart: always
+    environment:
+      POSTGRES_USER: user_vault
+      POSTGRES_PASSWORD: password_vault
+      POSTGRES_DB: vault_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../pi4-0101-g6-backend-1/database:/docker-entrypoint-initdb.d
+    networks:
+      - vault-network
+
+  backend-1:
+    build: 
+      context: ../pi4-0101-g6-backend-1
+    container_name: vault-backend-1
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: vault_db
+      DB_USER: user_vault
+      DB_PASS: password_vault
+      BACKEND2_URL: http://backend-2:8081
+    depends_on:
+      - db
+    networks:
+      - vault-network
+
+  backend-2:
+    build: 
+      context: ../pi4-0101-g6-backend-2
+    container_name: vault-backend-2
+    ports:
+      - "8081:8081"
+    networks:
+      - vault-network
+
+  frontend:
+    build: 
+      context: ../pi4-0101-g6-frontend
+    container_name: vault-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      BACKEND1_URL: http://localhost:8080
+    depends_on:
+      - backend-1
+    networks:
+      - vault-network
+
+networks:
+  vault-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
