@@ -30,4 +30,5 @@ Sistema cliente-servidor de cofre digital que armazena credenciais de forma segu
 * [ADR 0003: Adotar PostgreSQL como banco de dados do servidor](docs/adr/0003-adotar-postgresql-como-banco-do-servidor.md)
 * [ADR 0004: Usar Docker em todas as partes do sistema](docs/adr/0004-usar-docker-em-todas-as-partes-do-sistema.md)
 * [ADR 0005: Especificar obtenção do salt pré-login, derivação separada de chaves e ajuste de sessão nos contratos (Zero-Trust)](docs/adr/0005-especificacao-login-e-derivacao-chaves-zero-trust.md)
+* [ADR 0006: Especificação do contêiner de backup (.vault) com cabeçalho aberto e re-cifragem no cliente na restauração (Zero-Trust)](docs/adr/0006-especificacao-backup-cifrado-e-recifragem-zero-trust.md)
 
