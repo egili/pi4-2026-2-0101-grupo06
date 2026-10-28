@@ -23,3 +23,11 @@ Sistema cliente-servidor de cofre digital que armazena credenciais de forma segu
 * Leonardo Maciel Ferreira de Moraes — [@leomacifs](https://github.com/leomacifs)
 * Pietra Façanha Bortolato — [@piborto](https://github.com/piborto)
 
+## Decisões Arquiteturais (ADRs)
+
+* [ADR 0001: Usar Java como linguagem](docs/adr/0001-usar-java-como-linguagem.md)
+* [ADR 0002: Realizar toda a criptografia no lado do cliente (zero-knowledge)](docs/adr/0002-realizar-criptografia-no-cliente.md)
+* [ADR 0003: Adotar PostgreSQL como banco de dados do servidor](docs/adr/0003-adotar-postgresql-como-banco-do-servidor.md)
+* [ADR 0004: Usar Docker em todas as partes do sistema](docs/adr/0004-usar-docker-em-todas-as-partes-do-sistema.md)
+* [ADR 0005: Especificar obtenção do salt pré-login, derivação separada de chaves e ajuste de sessão nos contratos (Zero-Trust)](docs/adr/0005-especificacao-login-e-derivacao-chaves-zero-trust.md)
+
