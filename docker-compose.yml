@@ -51,7 +51,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      BACKEND1_URL: http://backend-1:8080
+      BACKEND1_URL: http://localhost:8080
     depends_on:
       - backend-1
     networks:
