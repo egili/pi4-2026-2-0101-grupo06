@@ -4,7 +4,7 @@
 
 **Contexto:**  
 Durante a revisão arquitetural e preparação para a codificação da autenticação e do cofre (Tarefa #820), identificaram-se três pontos críticos a formalizar:
-1. **Obtenção do Salt pré-login:** O fluxo original de autenticação (E3) e o contrato CT3 assumiam que o Cliente já conhecia o `salt` do usuário para derivar a chave mestra antes de efetuar o login. Na prática, o usuário fornece na CLI apenas seu `username` e `senhaMestra`. Como o `salt` foi gerado no cadastro e está persistido no banco de dados do Servidor (tabela `usuario` - CT9), o Cliente precisa obter esse `salt` do Servidor antes de executar a derivação criptográfica.
+1. **Obtenção do Salt pré-login:** O fluxo original de autenticação (E3) e o contrato CT3 assumiam que o Cliente já conhecia o `salt` do usuário para derivar a chave mestra antes de efetuar o login. Na prática, o usuário fornece na tela de login do front-end web apenas seu `username` e `senhaMestra`. Como o `salt` foi gerado no cadastro e está persistido no banco de dados do Servidor (tabela `usuario` - CT9), o Cliente precisa obter esse `salt` do Servidor antes de executar a derivação criptográfica.
 2. **Reutilização de chave / Falha potencial de Zero-Trust:** Se o mesmo hash enviado ao Servidor para autenticação for utilizado como chave para cifrar/decifrar as credenciais do cofre, um operador mal-intencionado ou um invasor que tenha acesso ao banco de dados terá a chave necessária para decifrar todos os registros do cofre, anulando a garantia de Zero-Trust (ADR 0002).
 3. **Inconsistência de sessão no Contrato CT2:** O contrato `salvarCredencial` (CT2) não exigia o identificador de sessão ativa (`tokenSessao`), ao contrário de todos os outros contratos de manipulação do cofre (CT4 a CT8), o que permitiria persistência de dados sem verificação de autenticidade da sessão.
 
@@ -22,9 +22,9 @@ Durante a revisão arquitetural e preparação para a codificação da autentica
    - Adicionar o retorno de erro `SESSAO_INVALIDA` na tabela de erros do contrato CT2, alinhando-o a CT4, CT5, CT6, CT7 e CT8.
 
 **Alternativas consideradas:**
-- *Armazenar o salt localmente em arquivo de configuração no Cliente:* descartada por quebrar a portabilidade do usuário (o usuário não conseguiria acessar seu cofre a partir de outro terminal).
+- *Armazenar o salt localmente em arquivo de configuração no Cliente:* descartada por quebrar a portabilidade do usuário (o usuário não conseguiria acessar seu cofre a partir de outra máquina).
 - *Enviar a senha mestra pura com TLS para o servidor calcular o hash:* descartada por violar frontalmente o modelo Zero-Trust / Zero-Knowledge (o servidor teria acesso à senha mestra em memória).
-- *Manter CT2 sem token e validar apenas a conexão do socket:* descartada por fragilidade de segurança (falta de controle sobre validade, expiração e fechamento da sessão autenticada).
+- *Manter CT2 sem token e validar apenas a conexão HTTP:* descartada por fragilidade de segurança (falta de controle sobre validade, expiração e fechamento da sessão autenticada).
 
 **Consequências:**
 - **Positivas:**
