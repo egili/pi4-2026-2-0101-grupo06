@@ -29,7 +29,6 @@ services:
       DB_NAME: vault_db
       DB_USER: user_vault
       DB_PASS: password_vault
-      BACKEND2_URL: http://backend-2:8081
     depends_on:
       - db
     networks:
@@ -41,6 +40,10 @@ services:
     container_name: vault-backend-2
     ports:
       - "8081:8081"
+    environment:
+      BACKEND1_URL: http://backend-1:8080
+    depends_on:
+      - backend-1
     networks:
       - vault-network
 
@@ -51,9 +54,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      BACKEND1_URL: http://localhost:8080
+      BACKEND2_URL: http://localhost:8081
     depends_on:
-      - backend-1
+      - backend-2
     networks:
       - vault-network
 
