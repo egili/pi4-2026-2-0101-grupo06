@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15
@@ -14,6 +12,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ../pi4-0101-g6-backend-1/database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_vault -d vault_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     networks:
       - vault-network
 
@@ -30,7 +33,8 @@ services:
       DB_USER: user_vault
       DB_PASS: password_vault
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - vault-network
 
