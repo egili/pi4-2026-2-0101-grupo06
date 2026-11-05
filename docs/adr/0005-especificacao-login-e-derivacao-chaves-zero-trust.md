@@ -10,12 +10,12 @@ Durante a revisão arquitetural e preparação para a codificação da autentica
 
 **Decisão:**
 1. **Handshake de Autenticação em Duas Fases (CT3):**
-   - **Fase 1 (`GET_SALT`):** O Cliente envia `username`. O Servidor localiza o usuário na tabela `usuario` e retorna o `salt` cadastrado (ou `USUARIO_NAO_ENCONTRADO`).
-   - **Fase 2 (`AUTH`):** O Cliente computa a derivação de chaves no seu processo local e envia `username` e `senhaMestraHash`. O Servidor valida o hash e retorna `tokenSessao` e `usuarioId`.
+   - **Fase 1 (`GET /salt/{username}`):** O Cliente (Back-end 2) faz uma requisição HTTP com o `username`. O Servidor localiza o usuário na tabela `usuario` e retorna o `salt` cadastrado (ou erro de usuário não encontrado).
+   - **Fase 2 (`POST /login`):** O Cliente computa a derivação de chaves no seu processo local e envia `username` e `senhaMestraHash` no corpo JSON. O Servidor valida o hash e retorna o token de sessão e o `usuarioId`.
 2. **Derivação de Chaves Separadas (Separação de Domínio Zero-Trust):**
    - A partir de `senhaMestra` e `salt`, o processo local do Cliente (Módulo de Criptografia / Back-end 2) deriva duas entidades criptográficas distintas:
      - **Chave de Cifragem (`chaveCifragem` / AES-256):** Derivada via função com custo computacional (PBKDF2WithHmacSHA256). Fica residente **estritamente na memória volátil do Cliente** durante a sessão. Nunca é transmitida pela rede nem conhecida pelo Servidor.
-     - **Hash de Autenticação (`senhaMestraHash`):** Gerado aplicando-se uma função unidirecional (ex.: HMAC-SHA256 ou hash com propósito exclusivo de autenticação) sobre a chave ou senha. É este hash que é enviado nos comandos `REGISTER` (CT1) e `AUTH` (CT3).
+     - **Hash de Autenticação (`senhaMestraHash`):** Gerado aplicando-se uma função unidirecional (ex.: HMAC-SHA256 ou hash com propósito exclusivo de autenticação) sobre a chave ou senha. É este hash que é enviado nas requisições `POST /usuarios` (CT1) e `POST /login` (CT3).
    - Por ser uma operação unidirecional, é matematicamente inviável para o Servidor (ou um invasor com acesso ao banco) reverter o `senhaMestraHash` para obter a `chaveCifragem`. Os dados do cofre permanecem indecifráveis pelo Servidor.
 3. **Padronização do Contrato CT2 (`salvarCredencial`):**
    - Adicionar o parâmetro obrigatório `tokenSessao` na Entrada do contrato CT2.
@@ -32,4 +32,4 @@ Durante a revisão arquitetural e preparação para a codificação da autentica
   - Viabilização prática do login em arquitetura cliente-servidor distribuída sem ferir a segurança.
   - Consistência e uniformidade no controle de sessão em todos os contratos de negócio do servidor.
 - **Negativas:**
-  - Uma etapa adicional de comunicação de rede (`GET_SALT`) antes do envio do comando `AUTH` (impacto em tempo na casa dos milissegundos).
+  - Uma etapa adicional de comunicação de rede (`GET /salt/{username}`) antes do envio da requisição `POST /login` (impacto em tempo na casa dos milissegundos).
