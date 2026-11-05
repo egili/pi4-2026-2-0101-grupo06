@@ -16,7 +16,7 @@ Durante a revisão arquitetural e detalhamento dos fluxos de contingência e per
 2. **Fluxo de Re-cifragem no Cliente (E9 / CT8):**
    - Ao importar um arquivo `.vault`, o Cliente extrai o cabeçalho, solicita a senha mestra do backup ao usuário e decifra o corpo do arquivo no espaço de memória local.
    - Em seguida, o Cliente decifra e **re-cifra cada credencial individualmente utilizando a chave de cifragem ativa do cofre atual e um novo IV exclusivo (`gerarIV()`)**.
-   - Somente as credenciais já re-cifradas com a chave da sessão ativa são enviadas via comando `IMPORT_BACKUP` (CT8) ao Servidor. O Servidor valida a sessão e insere os registros na tabela `credencial` (CT10), sem jamais ter contato com a chave de origem, a chave atual ou as senhas em texto claro.
+   - Somente as credenciais já re-cifradas com a chave da sessão ativa são enviadas via requisição `POST /backup` (CT8) ao Servidor. O Servidor valida a sessão e insere os registros na tabela `credencial` (CT10), sem jamais ter contato com a chave de origem, a chave atual ou as senhas em texto claro.
 3. **Fronteira de Segurança e Módulo Local:**
    - Formalizar nos diagramas de contêineres e documentação que toda a inteligência criptográfica roda em tempo de execução na JVM do Cliente (Back-end 2). Nas requisições HTTP do Cliente ao Servidor (Back-end 1) trafegam unicamente identificadores, hashes de autenticação unidirecionais, tokens e blobs cifrados.
 
