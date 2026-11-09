@@ -6,7 +6,7 @@
 Durante a revisão arquitetural e detalhamento dos fluxos de contingência e persistência (Tarefa #821), foram identificados três requisitos técnicos essenciais que precisavam de formalização antes da codificação:
 1. **Estrutura e Portabilidade do Backup (.vault):** O backup do cofre (E8) precisa ser um arquivo portátil, capaz de ser restaurado em qualquer máquina ou nova instalação. Para que o Cliente consiga decifrar o arquivo sem depender de dados remotos no banco de dados, os parâmetros de derivação e inicialização criptográfica precisam acompanhar o arquivo de forma padronizada.
 2. **Re-cifragem Obrigatória na Restauração (E9):** Um backup pode ter sido gerado com uma senha mestra antiga (antes de uma troca de senha) ou ter sido exportado de outro cofre. Se o Cliente simplesmente enviasse os dados cifrados originais ao Servidor, tais credenciais ficariam permanentemente ilegíveis no cofre atual (pois foram cifradas com uma chave diferente). Por outro lado, o Servidor não tem capacidade técnica de re-cifrar porque, por definição Zero-Trust, ele nunca possui acesso às chaves nem ao texto claro.
-3. **Consolidação dos Papéis Arquiteturais:** A visão geral precisava explicitar de forma inequívoca que o Módulo de Criptografia (Back-end 2) opera estritamente dentro do processo do Cliente CLI (Front-end), operando como biblioteca interna e mantendo a fronteira de rede livre de qualquer dado não cifrado.
+3. **Consolidação dos Papéis Arquiteturais:** A visão geral precisava explicitar de forma inequívoca que o Módulo de Criptografia opera estritamente no Cliente (Back-end 2), acionado pelo front-end web, mantendo a fronteira de rede livre de qualquer dado não cifrado.
 
 **Decisão:**
 1. **Estrutura em Duas Camadas do Arquivo `.vault`:**
@@ -16,9 +16,9 @@ Durante a revisão arquitetural e detalhamento dos fluxos de contingência e per
 2. **Fluxo de Re-cifragem no Cliente (E9 / CT8):**
    - Ao importar um arquivo `.vault`, o Cliente extrai o cabeçalho, solicita a senha mestra do backup ao usuário e decifra o corpo do arquivo no espaço de memória local.
    - Em seguida, o Cliente decifra e **re-cifra cada credencial individualmente utilizando a chave de cifragem ativa do cofre atual e um novo IV exclusivo (`gerarIV()`)**.
-   - Somente as credenciais já re-cifradas com a chave da sessão ativa são enviadas via comando `IMPORT_BACKUP` (CT8) ao Servidor. O Servidor valida a sessão e insere os registros na tabela `credencial` (CT10), sem jamais ter contato com a chave de origem, a chave atual ou as senhas em texto claro.
+   - Somente as credenciais já re-cifradas com a chave da sessão ativa são enviadas via requisição `POST /backup` (CT8) ao Servidor. O Servidor valida a sessão e insere os registros na tabela `credencial` (CT10), sem jamais ter contato com a chave de origem, a chave atual ou as senhas em texto claro.
 3. **Fronteira de Segurança e Módulo Local:**
-   - Formalizar nos diagramas de contêineres e documentação que toda a inteligência criptográfica roda em tempo de execução na JVM do Cliente CLI. Pelo canal Socket TCP trafegam unicamente identificadores, hashes de autenticação unidirecionais, tokens e blobs cifrados.
+   - Formalizar nos diagramas de contêineres e documentação que toda a inteligência criptográfica roda em tempo de execução na JVM do Cliente (Back-end 2). Nas requisições HTTP do Cliente ao Servidor (Back-end 1) trafegam unicamente identificadores, hashes de autenticação unidirecionais, tokens e blobs cifrados.
 
 **Alternativas consideradas:**
 - *Criptografar o arquivo com chave hardcoded no código para omitir o cabeçalho:* descartada por ser péssima prática de segurança (chave estática compartilhada anula o sigilo e facilita engenharia reversa).
