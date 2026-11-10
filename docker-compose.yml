@@ -25,6 +25,8 @@ services:
     build: 
       context: ../pi4-0101-g6-backend-1
     container_name: vault-backend-1
+    stdin_open: true
+    tty: true
     ports:
       - "8090:8090"
     environment:
