@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: user_vault
-      POSTGRES_PASSWORD: password_vault
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no arquivo .env}
       POSTGRES_DB: vault_db
     ports:
       - "5432:5432"
@@ -32,7 +32,8 @@ services:
       DB_PORT: 5432
       DB_NAME: vault_db
       DB_USER: user_vault
-      DB_PASS: password_vault
+      DB_PASS: ${DB_PASSWORD:?defina DB_PASSWORD no arquivo .env}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no arquivo .env}
     depends_on:
       db:
         condition: service_healthy
