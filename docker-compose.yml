@@ -26,7 +26,7 @@ services:
       context: ../pi4-0101-g6-backend-1
     container_name: vault-backend-1
     ports:
-      - "8080:8080"
+      - "8090:8090"
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -47,7 +47,8 @@ services:
     ports:
       - "8081:8081"
     environment:
-      BACKEND1_URL: http://backend-1:8080
+      SERVIDOR_HOST: backend-1
+      SERVIDOR_PORTA: 8090
     depends_on:
       - backend-1
     networks:
