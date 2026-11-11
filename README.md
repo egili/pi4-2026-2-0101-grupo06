@@ -54,7 +54,7 @@ O `docker-compose.yml` orquestra e inicializa os 4 contêineres essenciais do si
 | Contêiner | Serviço | Descrição | Porta Mapeada |
 |---|---|---|---|
 | `vault-db` | `db` | Banco de dados PostgreSQL 15. Executa automaticamente o script de inicialização DDL (`schema.sql`) na primeira subida, criando as tabelas `usuario` (CT9) e `credencial` (CT10). | `5432:5432` |
-| `vault-backend-1` | `backend-1` | Servidor Central em Java / Spring Boot. Expõe a API REST de persistência e autenticação via tokens JWT, gerenciando o cofre sem acesso a senhas ou dados em texto claro. | `8080:8080` |
+| `vault-backend-1` | `backend-1` | Servidor Central em Java / Spring Boot. Recebe os pedidos do Cliente por socket TCP, com uma thread por conexão. Autenticação por tokens JWT; gerencia o cofre sem acesso a senhas ou dados em texto claro. | `8090:8090` |
 | `vault-backend-2` | `backend-2` | Módulo de Criptografia em Java / Spring Boot. Biblioteca e serviço local que executa a derivação de chaves (PBKDF2) e cifragem simétrica (AES-GCM). | `8081:8081` |
 | `vault-frontend` | `frontend` | Servidor da Interface do Usuário (Cliente Web) em Node.js / HTML / CSS / JS. Serve a aplicação web para os navegadores. | `3000:3000` |
 
