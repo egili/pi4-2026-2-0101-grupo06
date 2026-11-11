@@ -10,8 +10,8 @@ Durante a revisão arquitetural e preparação para a codificação da autentica
 
 **Decisão:**
 1. **Handshake de Autenticação em Duas Fases (CT3):**
-   - **Fase 1 (`GET /salt/{username}`):** O Cliente (Back-end 2) faz uma requisição HTTP com o `username`. O Servidor localiza o usuário na tabela `usuario` e retorna o `salt` cadastrado (ou erro de usuário não encontrado).
-   - **Fase 2 (`POST /login`):** O Cliente computa a derivação de chaves no seu processo local e envia `username` e `senhaMestraHash` no corpo JSON. O Servidor valida o hash e retorna o token de sessão e o `usuarioId`.
+   - **Fase 1 (`PedidoDeSalt`):** O Cliente (Back-end 2) envia o `username` pelo socket. O Servidor localiza o usuário na tabela `usuario` e retorna o `salt` cadastrado (ou erro de usuário não encontrado).
+   - **Fase 2 (`PedidoDeLogin`):** O Cliente computa a derivação de chaves no seu processo local e envia `username` e `senhaMestraHash` no pedido. O Servidor valida o hash e retorna o token de sessão e o `usuarioId`.
 2. **Derivação de Chaves Separadas (Separação de Domínio Zero-Trust):**
    - A partir de `senhaMestra` e `salt`, o processo local do Cliente (Módulo de Criptografia / Back-end 2) deriva duas entidades criptográficas distintas:
      - **Chave de Cifragem (`chaveCifragem` / AES-256):** Derivada via função com custo computacional (PBKDF2WithHmacSHA256). Fica residente **estritamente na memória volátil do Cliente** durante a sessão. Nunca é transmitida pela rede nem conhecida pelo Servidor.
@@ -24,7 +24,7 @@ Durante a revisão arquitetural e preparação para a codificação da autentica
 **Alternativas consideradas:**
 - *Armazenar o salt localmente em arquivo de configuração no Cliente:* descartada por quebrar a portabilidade do usuário (o usuário não conseguiria acessar seu cofre a partir de outra máquina).
 - *Enviar a senha mestra pura com TLS para o servidor calcular o hash:* descartada por violar frontalmente o modelo Zero-Trust / Zero-Knowledge (o servidor teria acesso à senha mestra em memória).
-- *Manter CT2 sem token e validar apenas a conexão HTTP:* descartada por fragilidade de segurança (falta de controle sobre validade, expiração e fechamento da sessão autenticada).
+- *Manter CT2 sem token e validar apenas a conexão:* descartada por fragilidade de segurança (falta de controle sobre validade, expiração e fechamento da sessão autenticada).
 
 **Consequências:**
 - **Positivas:**
@@ -32,4 +32,4 @@ Durante a revisão arquitetural e preparação para a codificação da autentica
   - Viabilização prática do login em arquitetura cliente-servidor distribuída sem ferir a segurança.
   - Consistência e uniformidade no controle de sessão em todos os contratos de negócio do servidor.
 - **Negativas:**
-  - Uma etapa adicional de comunicação de rede (`GET /salt/{username}`) antes do envio da requisição `POST /login` (impacto em tempo na casa dos milissegundos).
+  - Uma etapa adicional de comunicação de rede (`PedidoDeSalt`) antes do envio do `PedidoDeLogin` (impacto em tempo na casa dos milissegundos).
