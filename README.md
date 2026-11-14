@@ -93,6 +93,7 @@ O `docker-compose.yml` orquestra e inicializa os 4 contêineres essenciais do si
   docker compose exec backend-2 tail -f /app/logs/cliente.log
   ```
   Para apagar os logs guardados, use `./scripts/limpar-logs.sh` e digite `APAGAR` quando pedido. Para mais detalhes, aumente o nível com `LOG_NIVEL=DEBUG docker compose up -d`.
+  A explicação completa, com o significado de cada mensagem, como achar erros e como apagar, está em [docs/logs.md](docs/logs.md).
 
 * **Encerrar o Servidor pelo terminal:** o Servidor aceita o comando `desativar`, que avisa os Clientes conectados e encerra o processo. Para usá-lo:
   ```bash
