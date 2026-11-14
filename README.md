@@ -23,7 +23,8 @@ O sistema foi arquitetado para ser inicializado de forma automatizada e reproduz
 
 ### 1. Pré-requisitos
 * **Docker** e **Docker Compose** instalados (versão 20.10+ ou Docker Desktop).
-* Portas de rede livres no host: `3000` (Front-end Web), `5432` (PostgreSQL), `8080` (Back-end 1) e `8081` (Back-end 2).
+* Portas de rede livres no host: `3000` (Front-end Web), `5432` (PostgreSQL), `8090` (socket do Back-end 1) e `8081` (Back-end 2).
+* Um arquivo `.env` na raiz deste repositório com as senhas do sistema (veja o passo 1 abaixo).
 * Todos os 4 repositórios do projeto clonados no mesmo diretório pai:
   ```text
   repositorios/
@@ -39,6 +40,16 @@ O sistema foi arquitetado para ser inicializado de forma automatizada e reproduz
    ```bash
    cd pi4-2026-2-0101-grupo06
    ```
+
+   **Crie o arquivo `.env`** a partir do modelo. Ele guarda as senhas e não vai para o git:
+   ```bash
+   cp .env.example .env
+   ```
+   Abra o `.env` e troque os valores:
+   * `DB_PASSWORD`: senha do PostgreSQL.
+   * `JWT_SECRET`: chave que assina os tokens, com no mínimo 32 caracteres. Gere uma com `openssl rand -base64 48`.
+
+   Sem esses dois valores, o `docker compose` recusa subir e mostra qual variável falta.
 
 2. Execute o comando para construir as imagens e iniciar todos os serviços em segundo plano:
    ```bash
@@ -75,6 +86,12 @@ O `docker-compose.yml` orquestra e inicializa os 4 contêineres essenciais do si
   docker compose logs -f frontend
   docker compose logs -f backend-1
   ```
+
+* **Encerrar o Servidor pelo terminal:** o Servidor aceita o comando `desativar`, que avisa os Clientes conectados e encerra o processo. Para usá-lo:
+  ```bash
+  docker attach vault-backend-1
+  ```
+  Digite `desativar` e pressione Enter. Para sair sem desligar o contêiner, use `Ctrl+P` e depois `Ctrl+Q`. Não use `Ctrl+C`, porque ele encerra o Servidor.
 
 * **Parar todo o sistema:**
   ```bash
