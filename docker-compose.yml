@@ -36,6 +36,9 @@ services:
       DB_USER: user_vault
       DB_PASS: ${DB_PASSWORD:?defina DB_PASSWORD no arquivo .env}
       JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no arquivo .env}
+      LOG_NIVEL: ${LOG_NIVEL:-INFO}
+    volumes:
+      - logs_servidor:/app/logs
     depends_on:
       db:
         condition: service_healthy
@@ -51,6 +54,9 @@ services:
     environment:
       SERVIDOR_HOST: backend-1
       SERVIDOR_PORTA: 8090
+      LOG_NIVEL: ${LOG_NIVEL:-INFO}
+    volumes:
+      - logs_cliente:/app/logs
     depends_on:
       - backend-1
     networks:
@@ -75,3 +81,5 @@ networks:
 
 volumes:
   postgres_data:
+  logs_servidor:
+  logs_cliente:
