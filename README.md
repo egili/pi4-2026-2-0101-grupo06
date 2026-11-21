@@ -14,7 +14,7 @@ Sistema cliente-servidor de cofre digital que armazena credenciais de forma segu
 |---|---|---|
 | Front-end (Cliente) | [pi4-0101-g6-frontend](https://github.com/egili/pi4-0101-g6-frontend) | Guilherme Heron|
 | Back-end 1 (Servidor) | [pi4-0101-g6-backend-1](https://github.com/egili/pi4-0101-g6-backend-1) | Eliseu Gili |
-| Back-end 2 (Módulo de Criptografia) | [pi4-0101-g6-backend-2](https://github.com/egili/pi4-0101-g6-backend-2) | Leonardo Maciel |
+| Back-end 2 (Cliente: API REST para o navegador e criptografia) | [pi4-0101-g6-backend-2](https://github.com/egili/pi4-0101-g6-backend-2) | Leonardo Maciel |
 | Documentos | este repositório | Pietra Bortolato |
 
 ## Como Executar o Sistema (Docker Compose)
@@ -66,7 +66,7 @@ O `docker-compose.yml` orquestra e inicializa os 4 contêineres essenciais do si
 |---|---|---|---|
 | `vault-db` | `db` | Banco de dados PostgreSQL 15. Executa automaticamente o script de inicialização DDL (`schema.sql`) na primeira subida, criando as tabelas `usuario` (CT9) e `credencial` (CT10). | `5432:5432` |
 | `vault-backend-1` | `backend-1` | Servidor Central em Java / Spring Boot. Recebe os pedidos do Cliente por socket TCP, com uma thread por conexão. Autenticação por tokens JWT; gerencia o cofre sem acesso a senhas ou dados em texto claro. | `8090:8090` |
-| `vault-backend-2` | `backend-2` | Módulo de Criptografia em Java / Spring Boot. Biblioteca e serviço local que executa a derivação de chaves (PBKDF2) e cifragem simétrica (AES-GCM). | `8081:8081` |
+| `vault-backend-2` | `backend-2` | Cliente em Java / Spring Boot. Expõe a API REST para o navegador, faz a derivação de chaves (PBKDF2) e a cifragem (AES-GCM), e fala com o Servidor por socket. | `8081:8081` |
 | `vault-frontend` | `frontend` | Servidor da Interface do Usuário (Cliente Web) em Node.js / HTML / CSS / JS. Serve a aplicação web para os navegadores. | `3000:3000` |
 
 ### 4. Verificação e Comandos Úteis
@@ -147,3 +147,4 @@ Abra o navegador web de sua preferência e acesse o endereço padrão:
 * [ADR 0004: Usar Docker em todas as partes do sistema](docs/adr/0004-usar-docker-em-todas-as-partes-do-sistema.md)
 * [ADR 0005: Especificar obtenção do salt pré-login, derivação separada de chaves e ajuste de sessão nos contratos (Zero-Trust)](docs/adr/0005-especificacao-login-e-derivacao-chaves-zero-trust.md)
 * [ADR 0006: Especificação do contêiner de backup (.vault) com cabeçalho aberto e re-cifragem no cliente na restauração (Zero-Trust)](docs/adr/0006-especificacao-backup-cifrado-e-recifragem-zero-trust.md)
+* [ADR 0007: Comunicação cliente-servidor por socket TCP com threads](docs/adr/0007-comunicacao-cliente-servidor-por-socket.md)
