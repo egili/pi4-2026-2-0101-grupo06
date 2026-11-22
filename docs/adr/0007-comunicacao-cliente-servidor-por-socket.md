@@ -8,7 +8,7 @@
 1. O Cliente (Back-end 2) e o Servidor (Back-end 1) trocam mensagens por `Socket` e `ServerSocket`, com objetos `Serializable` que estendem `Comunicado` (pacote `cofre.protocolo`, idêntico nos dois repositórios).
 2. O Servidor tem uma thread `AceitadoraDeConexao` que aceita conexões e uma thread `SupervisoraDeConexao` por conexão. A lista de conexões é protegida por `synchronized`.
 3. Cada lado usa a classe `Parceiro`, com semáforo e os métodos `receba`, `espie`, `envie` e `adeus`. O leitor de mensagens é uma única thread por conexão (`LeitorDoServidor` no Cliente), para evitar dois leitores no mesmo stream.
-4. O receptor usa `ObjectInputFilter` com lista de classes permitidas (`cofre.protocolo`, `java.lang` e `java.util`), para não desserializar classes arbitrárias vindas da rede.
+4. O receptor usa `ObjectInputFilter` com lista exata de classes permitidas e limites de profundidade e tamanho, para não desserializar classes arbitrárias vindas da rede. Os detalhes estão no ADR 0008, que substitui a lista de pacotes inteiros descrita aqui.
 5. O navegador continua falando REST (HTTP/JSON) só com o Cliente. O Servidor não tem API REST.
 6. O comando `desativar` no terminal do Servidor avisa todos os Clientes com `ComunicadoDeDesligamento` e encerra o processo.
 
