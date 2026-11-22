@@ -90,7 +90,7 @@ O nível padrão é `INFO`. Para mudar, veja [Como ajustar o nível](#como-ajust
 | Mensagem | O que significa | O que fazer |
 |---|---|---|
 | `Login recusado: usuário X pelo IP Y` | Senha errada, ou usuário que não existe. | Se for uma só, é normal. Se repetir muito, veja a seção de segurança. |
-| `Login bloqueado por excesso de tentativas: usuário X pelo IP Y` | O limite de tentativas foi atingido. O bloqueio dura 1 minuto (teste; 15 min na entrega final). | Aguardar 1 minuto. |
+| `Login bloqueado por excesso de tentativas: usuário X pelo IP Y` | O limite de tentativas foi atingido. O bloqueio dura 15 minutos. | Aguardar 15 minutos. |
 | `Cadastro recusado: nome já existe (X)` | Alguém tentou criar um usuário com um nome que já existe. | Escolher outro nome. |
 | `Pedido PedidoDeX recusado: SESSAO_INVALIDA` | O token da sessão é inválido ou expirou. | Fazer login de novo. |
 | `Pedido PedidoDeX recusado: ACESSO_NEGADO` | Alguém tentou alterar uma credencial que não é sua. | Conferir se é uma tentativa indevida. |
@@ -234,7 +234,7 @@ docker compose cp backend-2:/app/logs ./logs-cliente
 | Sintoma | Onde procurar | Causa provável |
 |---|---|---|
 | Login não funciona e aparece `ERRO_CONEXAO` | `cliente.log`: `Não foi possível conectar` | Servidor fora do ar ou porta errada. |
-| Login aparece como `MUITAS_TENTATIVAS` | `servidor.log`: `bloqueado` | Excesso de tentativas. Aguardar 1 minuto. |
+| Login aparece como `MUITAS_TENTATIVAS` | `servidor.log`: `bloqueado` | Excesso de tentativas. Aguardar 15 minutos. |
 | Salvar ou listar credenciais dá `SESSAO_INVALIDA` | `servidor.log`: `SESSAO_INVALIDA` | Token expirado. Fazer login de novo. |
 | Credencial não abre | `cliente.log`: `Falha ao decifrar` | Chave diferente da que cifrou o dado. |
 | Servidor não sobe | `docker compose logs backend-1` | Veja a mensagem de erro na saída do contêiner, porque o arquivo pode não ter sido criado ainda. |
